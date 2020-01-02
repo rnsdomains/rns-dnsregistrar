@@ -25,7 +25,7 @@ contract('DNSRegistrar', function(accounts) {
     assert.equal(await registrar.ens(), ens.address);
 
     var proof = utils.hexEncodeTXT({
-      name: '_ens.foo.test',
+      name: '_rns.foo.test',
       type: 'TXT',
       class: 'IN',
       ttl: 3600,
@@ -34,7 +34,7 @@ contract('DNSRegistrar', function(accounts) {
 
     await dnssec.setData(
       16,
-      utils.hexEncodeName('_ens.foo.test'),
+      utils.hexEncodeName('_rns.foo.test'),
       now,
       now,
       proof
@@ -48,7 +48,7 @@ contract('DNSRegistrar', function(accounts) {
   it('allows anyone to zero out an obsolete name', async function() {
     await dnssec.setData(
       16,
-      utils.hexEncodeName('_ens.foo.test'),
+      utils.hexEncodeName('_rns.foo.test'),
       now,
       now,
       '0x'
@@ -61,7 +61,7 @@ contract('DNSRegistrar', function(accounts) {
 
   it('allows anyone to update a DNSSEC referenced name', async function() {
     var proof = utils.hexEncodeTXT({
-      name: '_ens.foo.test',
+      name: '_rns.foo.test',
       type: 'TXT',
       class: 'IN',
       ttl: 3600,
@@ -70,7 +70,7 @@ contract('DNSRegistrar', function(accounts) {
 
     await dnssec.setData(
       16,
-      utils.hexEncodeName('_ens.foo.test'),
+      utils.hexEncodeName('_rns.foo.test'),
       now,
       now,
       proof
@@ -82,6 +82,24 @@ contract('DNSRegistrar', function(accounts) {
 
   it('does not allow updates with stale records', async function() {
     var proof = utils.hexEncodeTXT({
+      name: '_rns.bar.test',
+      type: 'TXT',
+      class: 'IN',
+      ttl: 3600,
+      data: ['a=' + accounts[0]]
+    });
+
+    await dnssec.setData(16, utils.hexEncodeName('_rns.foo.test'), 0, 0, proof);
+
+    try {
+      await registrar.claim(utils.hexEncodeName('bar.test'), proof);
+    } catch (error) {
+      return utils.ensureException(error);
+    }
+  });
+
+  it('does not allow claims on _ens names', async function() {
+    var proof = utils.hexEncodeTXT({
       name: '_ens.bar.test',
       type: 'TXT',
       class: 'IN',
@@ -89,7 +107,7 @@ contract('DNSRegistrar', function(accounts) {
       data: ['a=' + accounts[0]]
     });
 
-    await dnssec.setData(16, utils.hexEncodeName('_ens.foo.test'), 0, 0, proof);
+    await dnssec.setData(16, utils.hexEncodeName('_ens.bar.test'), now, now, proof);
 
     try {
       await registrar.claim(utils.hexEncodeName('bar.test'), proof);
