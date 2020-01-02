@@ -1,8 +1,8 @@
 pragma solidity ^0.5.0;
 
-import "@ensdomains/dnssec-oracle/contracts/DNSSEC.sol";
-import "@ensdomains/dnssec-oracle/contracts/BytesUtils.sol";
-import "@ensdomains/dnssec-oracle/contracts/RRUtils.sol";
+import "../../rns-dnssec-oracle/contracts/DNSSEC.sol";
+import "../../rns-dnssec-oracle/contracts/BytesUtils.sol";
+import "../../rns-dnssec-oracle/contracts/RRUtils.sol";
 import "@ensdomains/buffer/contracts/Buffer.sol";
 
 library DNSClaimChecker {
@@ -28,10 +28,10 @@ library DNSClaimChecker {
         view
         returns (address, bool)
     {
-        // Add "_ens." to the front of the name.
+        // Add "_rns." to the front of the name.
         Buffer.buffer memory buf;
         buf.init(name.length + 5);
-        buf.append("\x04_ens");
+        buf.append("\x04_rns");
         buf.append(name);
         bytes20 hash;
         uint64 inserted;

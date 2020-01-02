@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "@ensdomains/dnssec-oracle/contracts/DNSSEC.sol";
+import "../../rns-dnssec-oracle/contracts/DNSSEC.sol";
 import "./DNSClaimChecker.sol";
 
 /**
