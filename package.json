@@ -10,6 +10,7 @@
   "dependencies": {
     "@ensdomains/buffer": "0.0.6",
     "@ensdomains/ens": "^0.3.0",
+    "@rsksmart/dnsprovejs": "file:../rns-dnsprovejs",
     "dns-packet": "^5.0.4",
     "eth-ens-namehash": "^2.0.8",
     "js-sha3": "^0.5.7",
