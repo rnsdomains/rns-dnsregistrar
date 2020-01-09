@@ -20,7 +20,7 @@ contract('DNSRegistrar', function(accounts) {
     await ens.setSubnodeOwner('0x0', '0x' + sha3(tld), registrar.address);
   });
 
-  it('allows the owner of a DNS name to claim it in ENS', async function() {
+  it('allows the owner of a DNS name to claim it in RNS', async function() {
     assert.equal(await registrar.oracle(), dnssec.address);
     assert.equal(await registrar.ens(), ens.address);
 
