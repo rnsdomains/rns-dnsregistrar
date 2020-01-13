@@ -1,17 +1,17 @@
 pragma solidity ^0.5.0;
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "../../rns-dnssec-oracle/contracts/DNSSEC.sol";
+import "@rsksmart/rns-registry/contracts/RNS.sol";
+import "@rsksmart/dnssec-oracle/contracts/DNSSEC.sol";
 import "./DNSClaimChecker.sol";
 
 /**
- * @dev An ENS registrar that allows the owner of a DNS name to claim the
- *      corresponding name in ENS.
+ * @dev An RNS registrar that allows the owner of a DNS name to claim the
+ *      corresponding name in RNS.
  */
 contract DNSRegistrar {
 
     DNSSEC public oracle;
-    ENS public ens;
+    RNS public rns;
 
     bytes4 constant private INTERFACE_META_ID = bytes4(keccak256("supportsInterface(bytes4)"));
     bytes4 constant private DNSSEC_CLAIM_ID = bytes4(
@@ -22,9 +22,9 @@ contract DNSRegistrar {
 
     event Claim(bytes32 indexed node, address indexed owner, bytes dnsname);
 
-    constructor(DNSSEC _dnssec, ENS _ens) public {
+    constructor(DNSSEC _dnssec, RNS _rns) public {
         oracle = _dnssec;
-        ens = _ens;
+        rns = _rns;
     }
 
     /**
@@ -32,7 +32,7 @@ contract DNSRegistrar {
      * @param name The name to claim, in DNS wire format.
      * @param proof A DNS RRSet proving ownership of the name. Must be verified
      *        in the DNSSEC oracle before calling. This RRSET must contain a TXT
-     *        record for '_ens.' + name, with the value 'a=0x...'. Ownership of
+     *        record for '_rns.' + name, with the value 'a=0x...'. Ownership of
      *        the name will be transferred to the address specified in the TXT
      *        record.
      */
@@ -44,7 +44,7 @@ contract DNSRegistrar {
         bytes32 rootNode;
         (labelHash, rootNode) = DNSClaimChecker.getLabels(name);
 
-        ens.setSubnodeOwner(rootNode, labelHash, addr);
+        rns.setSubnodeOwner(rootNode, labelHash, addr);
         emit Claim(keccak256(abi.encodePacked(rootNode, labelHash)), addr, name);
     }
 

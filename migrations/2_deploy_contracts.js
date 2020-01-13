@@ -1,4 +1,4 @@
-const ENSRegistry = artifacts.require('@ensdomains/ens/ENSRegistry');
+const RNSRegistry = artifacts.require('./RNS');
 const DummyDNSSEC = artifacts.require('./DummyDNSSEC');
 const DNSRegistrar = artifacts.require('./DNSRegistrar');
 const namehash = require('eth-ens-namehash');
@@ -20,15 +20,15 @@ module.exports = function(deployer, network) {
       return;
     }
 
-    await deployer.deploy(ENSRegistry);
+    await deployer.deploy(RNSRegistry);
     await deployer.deploy(DummyDNSSEC);
 
-    const ens = await ENSRegistry.deployed();
+    const rns = await RNSRegistry.deployed();
     const dnssec = await DummyDNSSEC.deployed();
 
-    await deployer.deploy(DNSRegistrar, dnssec.address, ens.address);
+    await deployer.deploy(DNSRegistrar, dnssec.address, rns.address);
     const registrar = await DNSRegistrar.deployed();
 
-    await ens.setSubnodeOwner('0x0', '0x' + sha3(tld), registrar.address);
+    await rns.setSubnodeOwner('0x0', '0x' + sha3(tld), registrar.address);
   });
 };

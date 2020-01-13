@@ -1,4 +1,4 @@
-const ENSRegistry = artifacts.require('./ENSRegistry.sol');
+const RNS = artifacts.require('./RNS.sol');
 const DummyDNSSEC = artifacts.require('./DummyDNSSEC.sol');
 const DNSRegistrarContract = artifacts.require('./DNSRegistrar.sol');
 const namehash = require('eth-ens-namehash');
@@ -7,22 +7,22 @@ const utils = require('./Helpers/Utils');
 
 contract('DNSRegistrar', function(accounts) {
   var registrar = null;
-  var ens = null;
+  var rns = null;
   var dnssec = null;
   var tld = 'test';
   var now = Math.round(new Date().getTime() / 1000);
 
   beforeEach(async function() {
-    ens = await ENSRegistry.new();
+    rns = await RNS.new();
     dnssec = await DummyDNSSEC.new();
-    registrar = await DNSRegistrarContract.new(dnssec.address, ens.address);
+    registrar = await DNSRegistrarContract.new(dnssec.address, rns.address);
 
-    await ens.setSubnodeOwner('0x0', '0x' + sha3(tld), registrar.address);
+    await rns.setSubnodeOwner('0x0', '0x' + sha3(tld), registrar.address);
   });
 
   it('allows the owner of a DNS name to claim it in RNS', async function() {
     assert.equal(await registrar.oracle(), dnssec.address);
-    assert.equal(await registrar.ens(), ens.address);
+    assert.equal(await registrar.rns(), rns.address);
 
     var proof = utils.hexEncodeTXT({
       name: '_rns.foo.test',
@@ -42,7 +42,7 @@ contract('DNSRegistrar', function(accounts) {
 
     await registrar.claim(utils.hexEncodeName('foo.test'), proof);
 
-    assert.equal(await ens.owner(namehash.hash('foo.test')), accounts[0]);
+    assert.equal(await rns.owner(namehash.hash('foo.test')), accounts[0]);
   });
 
   it('allows anyone to zero out an obsolete name', async function() {
@@ -56,7 +56,7 @@ contract('DNSRegistrar', function(accounts) {
 
     await registrar.claim(utils.hexEncodeName('foo.test'), '0x');
 
-    assert.equal(await ens.owner(namehash.hash('foo.test')), 0);
+    assert.equal(await rns.owner(namehash.hash('foo.test')), 0);
   });
 
   it('allows anyone to update a DNSSEC referenced name', async function() {
@@ -77,7 +77,7 @@ contract('DNSRegistrar', function(accounts) {
     );
 
     await registrar.claim(utils.hexEncodeName('foo.test'), proof);
-    assert.equal(await ens.owner(namehash.hash('foo.test')), accounts[1]);
+    assert.equal(await rns.owner(namehash.hash('foo.test')), accounts[1]);
   });
 
   it('does not allow updates with stale records', async function() {

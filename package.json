@@ -1,5 +1,5 @@
 {
-  "name": "@ensdomains/dnsregistrar",
+  "name": "@rsksmart/dnsregistrar",
   "main": "dist/dnsregistrar.js",
   "version": "0.3.9",
   "requires": true,
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@ensdomains/buffer": "0.0.6",
-    "@ensdomains/ens": "^0.3.0",
-    "@rsksmart/dnsprovejs": "file:../rns-dnsprovejs",
+    "@rsksmart/rns-registry": "^1.0.0",
+    "@rsksmart/dnssec-oracle": "file:../rns-dnssec-oracle",
     "dns-packet": "^5.0.4",
     "eth-ens-namehash": "^2.0.8",
     "js-sha3": "^0.5.7",
@@ -27,6 +27,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "eth-gas-reporter": "^0.1.12",
+    "@rsksmart/dnsprovejs": "file:../rns-dnsprovejs",
     "prettier": "^1.13.7",
     "sinon": "^6.0.0",
     "solium": "^1.2.4",

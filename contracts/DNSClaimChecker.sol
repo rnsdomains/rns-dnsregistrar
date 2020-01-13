@@ -1,8 +1,8 @@
 pragma solidity ^0.5.0;
 
-import "../../rns-dnssec-oracle/contracts/DNSSEC.sol";
-import "../../rns-dnssec-oracle/contracts/BytesUtils.sol";
-import "../../rns-dnssec-oracle/contracts/RRUtils.sol";
+import "@rsksmart/dnssec-oracle/contracts/DNSSEC.sol";
+import "@rsksmart/dnssec-oracle/contracts/BytesUtils.sol";
+import "@rsksmart/dnssec-oracle/contracts/RRUtils.sol";
 import "@ensdomains/buffer/contracts/Buffer.sol";
 
 library DNSClaimChecker {
