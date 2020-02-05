@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
+import "@rsksmart/rns-registry/contracts/RNS.sol";
 import "@ensdomains/dnssec-oracle/contracts/DNSSEC.sol";
 import "./DNSClaimChecker.sol";
 
@@ -9,9 +9,8 @@ import "./DNSClaimChecker.sol";
  *      corresponding name in ENS.
  */
 contract DNSRegistrar {
-
     DNSSEC public oracle;
-    ENS public ens;
+    RNS public rns;
 
     bytes4 constant private INTERFACE_META_ID = bytes4(keccak256("supportsInterface(bytes4)"));
     bytes4 constant private DNSSEC_CLAIM_ID = bytes4(
@@ -22,9 +21,13 @@ contract DNSRegistrar {
 
     event Claim(bytes32 indexed node, address indexed owner, bytes dnsname);
 
-    constructor(DNSSEC _dnssec, ENS _ens) public {
+    constructor(DNSSEC _dnssec, RNS _rns) public {
         oracle = _dnssec;
-        ens = _ens;
+        rns = _rns;
+    }
+
+    function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
+        return interfaceID == INTERFACE_META_ID || interfaceID == DNSSEC_CLAIM_ID;
     }
 
     /**
@@ -44,7 +47,7 @@ contract DNSRegistrar {
         bytes32 rootNode;
         (labelHash, rootNode) = DNSClaimChecker.getLabels(name);
 
-        ens.setSubnodeOwner(rootNode, labelHash, addr);
+        rns.setSubnodeOwner(rootNode, labelHash, addr);
         emit Claim(keccak256(abi.encodePacked(rootNode, labelHash)), addr, name);
     }
 
@@ -58,10 +61,5 @@ contract DNSRegistrar {
     function proveAndClaim(bytes memory name, bytes memory input, bytes memory proof) public {
         proof = oracle.submitRRSets(input, proof);
         claim(name, proof);
-    }
-
-    function supportsInterface(bytes4 interfaceID) external pure returns (bool) {
-        return interfaceID == INTERFACE_META_ID ||
-               interfaceID == DNSSEC_CLAIM_ID;
     }
 }

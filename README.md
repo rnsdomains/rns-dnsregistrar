@@ -1,9 +1,8 @@
 # DNS registrar for ENS
 
-[![Build Status](https://travis-ci.org/ensdomains/dnsregistrar.svg?branch=master)](https://travis-ci.org/ensdomains/dnsregistrar) [![License](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](LICENSE)
+This project implements a registrar for RNS that grants RNS domains to anyone who can prove ownership of the corresponding domain in DNS; it uses the [DNSSEC Oracle](https://github.com/rnsdomains/rns-dnssec-oracle) to prove this.
 
-This project implements a registrar for ENS that grants ENS domains to anyone who can prove ownership of the corresponding domain in DNS; it uses the [DNSSEC Oracle](https://github.com/Arachnid/dnssec-oracle) to prove this.
-
+<!--
 For details on how to use this, see [How to claim your DNS domain in ENS](https://medium.com/the-ethereum-name-service/how-to-claim-your-dns-domain-on-ens-e600ef2d92ca).
 
 ## Installing
@@ -31,19 +30,28 @@ dnsregistrar.claim('foo.test').then(claim => {
 ```
 
 For more detail, please [read the doc](https://dnsregistrar.readthedocs.io/en/latest/)
-
+-->
 ## Contribution guide
 
-#### Setting up
+### Setting up
 
 ```
-git clone https://github.com/ensdomains/dnsregistrar
-cd dnsregistrar
+git clone https://github.com/rnsdomains/rns-dnsregistrar
+cd rns-dnsregistrar
 npm install
 ```
 
 ### Running test
 
+On top of Ganache:
+
 ```
-npm run test
+npx truffle test
+```
+
+On top RSK:
+
+```
+docker build -t regtest -f Dockerfile.RSKRegtest .
+docker run --name regtest-node-01 --rm -p 4444:4444 -p 30305:30305 regtest
 ```

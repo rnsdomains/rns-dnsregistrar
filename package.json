@@ -1,28 +1,28 @@
 {
-  "name": "@ensdomains/dnsregistrar",
+  "name": "@rsksmart/rns-dnsregistrar",
   "main": "dist/dnsregistrar.js",
-  "version": "0.3.9",
-  "requires": true,
-  "lockfileVersion": 1,
-  "prettier": {
-    "singleQuote": true
-  },
+  "version": "1.0.0",
+  "files": [
+    "contracts/",
+    "!contracts/Migrations.sol",
+    "dist/"
+  ],
   "dependencies": {
     "@ensdomains/buffer": "0.0.6",
     "@ensdomains/dnsprovejs": "^0.1.8",
     "@ensdomains/dnssec-oracle": "0.1.0",
-    "@ensdomains/ens": "^0.3.0",
+    "@rsksmart/rns-registry": "^1.0.1",
     "dns-packet": "^5.0.4",
     "eth-ens-namehash": "^2.0.8",
     "js-sha3": "^0.5.7",
     "web3": "1.0.0-beta.34"
   },
   "scripts": {
-    "lint": "solium --dir ./contracts",
+    "lint": "npx solium --dir ./contracts && npx prettier --check lib/**/*.js",
     "pretest": "truffle compile",
-    "test": "truffle test",
+    "test": "npm run lint && truffle test --network regtest",
     "compile": "babel --presets env -d dist lib",
-    "prepublishOnly": "truffle compile && truffle networks --clean && npm run compile"
+    "prepublishOnly": "truffle compile && npm run compile"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -32,5 +32,8 @@
     "sinon": "^6.0.0",
     "solium": "^1.2.4",
     "truffle": "^5.0.5"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }

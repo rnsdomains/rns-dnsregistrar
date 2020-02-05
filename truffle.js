@@ -1,9 +1,9 @@
 module.exports = {
-  // mocha: {
-  //   reporter: 'eth-gas-reporter',
-  //   reporterOptions : {
-  //     currency: 'USD',
-  //     gasPrice: 1
-  //   }
-  // }
+  networks: {
+    regtest: {
+      host: 'localhost',
+      port: 4444,
+      network_id: '*',
+    },
+  },
 };
